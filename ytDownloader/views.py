@@ -16,7 +16,6 @@ def ytd(request):
 def download_page(request):
 	global url
 	url = request.GET.get('url')
-
 	yt = YouTube(url)
 	global streams
 	streams = yt.streams
@@ -55,7 +54,7 @@ def download_page(request):
 
 
 	res = list(dict.fromkeys(res))
-
+	request.session['urls'] =url
 	return render(request, 'download.html', {
 		'onlyres': ores,
 		'res': res,
@@ -66,8 +65,7 @@ def download_page(request):
 	})
 
 def success(request, res):
-	global url
-
+	url = request.session.get('urls')
 	homedir = os.path.expanduser("~")
 
 	dirs = homedir + '/Downloads/'
@@ -82,7 +80,7 @@ def success(request, res):
 		
 		
 		streams.filter(res=res).first().download(output_path = dirs, filename = "video.mp4")
-		file = FileWrapper(open(f'{dirs}/video.mp4', 'rb'))
+		file = FileWrapper(open(f'{dirs}/{title}.mp4', 'rb'))
 		# path =  '/home/runner/youtube-video-downloader/downloads/video' + '.mp4'
 		# o = dirs + title + '.mp4'
 		response = HttpResponse(file, content_type = 'application/vnd.mp4')
