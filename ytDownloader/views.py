@@ -54,7 +54,6 @@ def download_page(request):
 
 
 	res = list(dict.fromkeys(res))
-	request.session['urls'] =url
 	return render(request, 'download.html', {
 		'onlyres': ores,
 		'res': res,
@@ -65,7 +64,7 @@ def download_page(request):
 	})
 
 def success(request, res):
-	url = request.session.get('urls')
+	global url
 	homedir = os.path.expanduser("~")
 
 	dirs = homedir + '/Downloads/'
